@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import { useActiveTrack } from "react-native-track-player";
+import { MovingText } from "./MovingText";
 export const FloatingPlayer = ({ style }: ViewProps) => {
     const activeTrack = useActiveTrack();
     const lastActiveTrack = useLastActiveTrack();
@@ -26,9 +27,11 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
                     style={styles.trackArtworkImage}
                 />
                 <View style={styles.trackTitleContainer}>
-                    <Text style={styles.trackTitle}>
-                        {displayedTrack.title}
-                    </Text>
+                    <MovingText
+                        style={styles.trackTitle}
+                        text={displayedTrack.title ?? ""}
+                        animationThreshold={25}
+                    />
                 </View>
                 <View style={styles.trackControlsContainer}>
                     <PlayPauseButton iconSize={24} />
