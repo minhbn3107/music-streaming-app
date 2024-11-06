@@ -1,9 +1,9 @@
 export const colors = {
-    primary: "#fc3c44",
-    background: "#000",
-    text: "#fff",
+    primary: "#1ce5ff",
+    background: "#fff",
+    text: "#000",
     textMuted: "#9ca3af",
-    icon: "#fff",
+    icon: "#fc3c44",
     maximumTrackTintColor: "rgba(255,255,255,0.4)",
     minimumTrackTintColor: "rgba(255,255,255,0.6)",
 };

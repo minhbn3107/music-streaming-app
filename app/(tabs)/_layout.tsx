@@ -26,37 +26,25 @@ const TabsNavigation = () => {
                         borderTopLeftRadius: 20,
                         borderTopRightRadius: 20,
                         borderTopWidth: 0,
-                        paddingTop: 8,
                     },
-                    tabBarBackground: () => (
-                        <BlurView
-                            intensity={90}
-                            style={{
-                                ...StyleSheet.absoluteFillObject,
-                                overflow: "hidden",
-                                borderRadius: 100,
-                                backgroundColor: colors.textMuted,
-                            }}
-                        />
-                    ),
                 }}
             >
                 <Tabs.Screen
-                    name="favorites"
+                    name="home"
                     options={{
-                        title: "Favorites",
+                        title: "Home",
                         tabBarIcon: ({ color }) => (
-                            <FontAwesome name="heart" size={20} color={color} />
+                            <FontAwesome name="home" size={20} color={color} />
                         ),
                     }}
                 />
                 <Tabs.Screen
-                    name="playlists"
+                    name="search"
                     options={{
-                        title: "Playlists",
+                        title: "Search",
                         tabBarIcon: ({ color }) => (
-                            <MaterialCommunityIcons
-                                name="playlist-play"
+                            <FontAwesome
+                                name="search"
                                 size={28}
                                 color={color}
                             />
@@ -64,28 +52,24 @@ const TabsNavigation = () => {
                     }}
                 />
                 <Tabs.Screen
-                    name="(songs)"
+                    name="feed"
                     options={{
-                        title: "Songs",
+                        title: "Feed",
                         tabBarIcon: ({ color }) => (
-                            <Ionicons
-                                name="musical-notes-sharp"
-                                size={24}
+                            <FontAwesome
+                                name="archive"
+                                size={20}
                                 color={color}
                             />
                         ),
                     }}
                 />
                 <Tabs.Screen
-                    name="artists"
+                    name="(library)"
                     options={{
-                        title: "Artists",
+                        title: "Library",
                         tabBarIcon: ({ color }) => (
-                            <FontAwesome6
-                                name="users-line"
-                                size={20}
-                                color={color}
-                            />
+                            <FontAwesome6 name="book" size={24} color={color} />
                         ),
                     }}
                 />

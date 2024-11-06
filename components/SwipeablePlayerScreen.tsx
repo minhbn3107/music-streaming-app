@@ -24,28 +24,34 @@ interface SwipeablePlayerScreenProps extends PropsWithChildren {
 }
 
 const styles = StyleSheet.create({
+    wrapper: {
+        flex: 1,
+        backgroundColor: "transparent",
+    },
     overlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: "transparent", // Changed to transparent
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     container: {
         flex: 1,
         position: "absolute",
-        top: 50,
+        top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "transparent", // Changed to transparent
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: -2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        backgroundColor: "transparent",
+    },
+    contentWrapper: {
+        flex: 1,
+        backgroundColor: "transparent",
+    },
+    content: {
+        flex: 1,
+        marginTop: 50,
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+        overflow: "hidden",
+        backgroundColor: "transparent",
     },
 });
 
@@ -75,7 +81,6 @@ export const SwipeablePlayerScreen: React.FC<SwipeablePlayerScreenProps> = ({
             } else {
                 translateY.value = context.value.y + event.translationY;
             }
-            // Update overlay opacity based on translation
             overlayOpacity.value = Math.max(
                 0,
                 1 - translateY.value / SCREEN_HEIGHT
@@ -106,7 +111,7 @@ export const SwipeablePlayerScreen: React.FC<SwipeablePlayerScreenProps> = ({
 
     const containerStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: translateY.value }],
-        height: SCREEN_HEIGHT - insets.top,
+        height: SCREEN_HEIGHT,
     }));
 
     const overlayStyle = useAnimatedStyle(() => ({
@@ -114,11 +119,13 @@ export const SwipeablePlayerScreen: React.FC<SwipeablePlayerScreenProps> = ({
     }));
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.wrapper}>
             <Animated.View style={[styles.overlay, overlayStyle]} />
             <GestureDetector gesture={panGesture}>
                 <Animated.View style={[styles.container, containerStyle]}>
-                    {children}
+                    <View style={styles.contentWrapper}>
+                        <View style={styles.content}>{children}</View>
+                    </View>
                 </Animated.View>
             </GestureDetector>
         </View>

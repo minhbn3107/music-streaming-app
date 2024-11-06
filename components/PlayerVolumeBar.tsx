@@ -17,7 +17,7 @@ export const PlayerVolumeBar = ({ style }: ViewProps) => {
                 <Ionicons
                     name="volume-low"
                     size={20}
-                    color={colors.icon}
+                    color={colors.background}
                     style={{ opacity: 0.8 }}
                 />
                 <View
@@ -46,7 +46,7 @@ export const PlayerVolumeBar = ({ style }: ViewProps) => {
                 <Ionicons
                     name="volume-high"
                     size={20}
-                    color={colors.icon}
+                    color={colors.background}
                     style={{ opacity: 0.8 }}
                 />
             </View>

@@ -2,11 +2,18 @@ import { PlayPauseButton, SkipToNextButton } from "@/components/PlayerControls";
 import { unknownTrackImageUri } from "@/constants/images";
 import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
 import { defaultStyles } from "@/styles";
-import { StyleSheet, TouchableOpacity, View, ViewProps } from "react-native";
+import {
+    StyleSheet,
+    TouchableOpacity,
+    View,
+    ViewProps,
+    Text,
+} from "react-native";
 import FastImage from "react-native-fast-image";
 import { useActiveTrack } from "react-native-track-player";
-import { MovingText } from "./MovingText";
 import { useRouter } from "expo-router";
+import { Marquee } from "@animatereactnative/marquee";
+
 export const FloatingPlayer = ({ style }: ViewProps) => {
     const router = useRouter();
     const activeTrack = useActiveTrack();
@@ -32,11 +39,30 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
                     style={styles.trackArtworkImage}
                 />
                 <View style={styles.trackTitleContainer}>
-                    <MovingText
-                        style={styles.trackTitle}
-                        text={displayedTrack.title ?? ""}
-                        animationThreshold={25}
-                    />
+                    {displayedTrack.title?.length &&
+                    displayedTrack.title?.length > 25 ? (
+                        <Marquee spacing={150} speed={1}>
+                            <Text style={styles.trackTitle}>
+                                {displayedTrack.title}
+                            </Text>
+                        </Marquee>
+                    ) : (
+                        <Text style={styles.trackTitle}>
+                            {displayedTrack.title}
+                        </Text>
+                    )}
+                    {displayedTrack.artist?.length &&
+                    displayedTrack.artist?.length > 30 ? (
+                        <Marquee spacing={150} speed={1}>
+                            <Text style={styles.trackArtist}>
+                                {displayedTrack.artist}
+                            </Text>
+                        </Marquee>
+                    ) : (
+                        <Text style={styles.trackArtist}>
+                            {displayedTrack.artist || "Unknown Artist"}
+                        </Text>
+                    )}
                 </View>
                 <View style={styles.trackControlsContainer}>
                     <PlayPauseButton iconSize={24} />
@@ -68,6 +94,12 @@ const styles = StyleSheet.create({
     trackTitle: {
         ...defaultStyles.text,
         fontSize: 18,
+        fontWeight: "600",
+        paddingLeft: 10,
+    },
+    trackArtist: {
+        color: "#fff",
+        fontSize: 15,
         fontWeight: "600",
         paddingLeft: 10,
     },

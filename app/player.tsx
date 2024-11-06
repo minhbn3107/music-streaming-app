@@ -1,4 +1,4 @@
-import { MovingText } from "@/components/MovingText";
+import { Marquee } from "@animatereactnative/marquee";
 import { PlayerControls } from "@/components/PlayerControls";
 import { PlayerProgressBar } from "@/components/PlayerProgressbar";
 import { PlayerRepeatToggle } from "@/components/PlayerRepeatToggle";
@@ -7,7 +7,6 @@ import { SwipeablePlayerScreen } from "@/components/SwipeablePlayerScreen";
 import { unknownTrackImageUri } from "@/constants/images";
 import { colors, fontSize, screenPadding } from "@/constants/tokens";
 import { usePlayerBackground } from "@/hooks/usePlayerBackground";
-
 import { defaultStyles, utilsStyles } from "@/styles";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -35,7 +34,7 @@ const PlayerScreen = () => {
     return (
         <SwipeablePlayerScreen>
             <LinearGradient
-                style={{ flex: 1, borderRadius: 50 }}
+                style={{ flex: 1 }}
                 colors={
                     imageColors
                         ? [imageColors.dominant, imageColors.average]
@@ -77,11 +76,29 @@ const PlayerScreen = () => {
                                         <View
                                             style={styles.trackTitleContainer}
                                         >
-                                            <MovingText
-                                                text={activeTrack.title ?? ""}
-                                                animationThreshold={30}
-                                                style={styles.trackTitleText}
-                                            />
+                                            {activeTrack.title?.length &&
+                                            activeTrack.title?.length > 25 ? (
+                                                <Marquee
+                                                    spacing={150}
+                                                    speed={1}
+                                                >
+                                                    <Text
+                                                        style={
+                                                            styles.trackTitleText
+                                                        }
+                                                    >
+                                                        {activeTrack.title}
+                                                    </Text>
+                                                </Marquee>
+                                            ) : (
+                                                <Text
+                                                    style={
+                                                        styles.trackTitleText
+                                                    }
+                                                >
+                                                    {activeTrack.title}
+                                                </Text>
+                                            )}
                                         </View>
                                         {/* Favorite and repeat button icon */}
                                         <View
@@ -101,7 +118,7 @@ const PlayerScreen = () => {
                                                 color={
                                                     isFavorite
                                                         ? colors.primary
-                                                        : colors.icon
+                                                        : colors.background
                                                 }
                                                 style={{ marginHorizontal: 14 }}
                                                 onPress={toggleFavorite}
@@ -114,15 +131,19 @@ const PlayerScreen = () => {
                                         </View>
                                     </View>
                                     {/* Track artist */}
-                                    {activeTrack.artist && (
-                                        <Text
-                                            numberOfLines={1}
-                                            style={[
-                                                styles.trackArtistText,
-                                                { marginTop: 6 },
-                                            ]}
-                                        >
-                                            {activeTrack.artist}
+                                    {activeTrack.artist?.length &&
+                                    activeTrack.artist?.length > 30 ? (
+                                        <Marquee spacing={150} speed={1}>
+                                            <Text
+                                                style={styles.trackArtistText}
+                                            >
+                                                {activeTrack.artist}
+                                            </Text>
+                                        </Marquee>
+                                    ) : (
+                                        <Text style={styles.trackArtistText}>
+                                            {activeTrack.artist ||
+                                                "Unknown Artist"}
                                         </Text>
                                     )}
                                 </View>
@@ -169,7 +190,7 @@ const styles = StyleSheet.create({
     overlayContainer: {
         ...defaultStyles.container,
         paddingHorizontal: screenPadding.horizontal,
-        backgroundColor: "rgba(0,0,0,0.5)",
+        backgroundColor: "transparent",
     },
     artworkImageContainer: {
         shadowOffset: {
