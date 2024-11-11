@@ -1,14 +1,7 @@
 import { FloatingPlayer } from "@/components/FloatingPlayer";
 import { colors, fontSize } from "@/constants/tokens";
-import {
-    FontAwesome,
-    FontAwesome6,
-    Ionicons,
-    MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
+import { FontAwesome, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { StyleSheet } from "react-native";
 
 const TabsNavigation = () => {
     return (
@@ -56,8 +49,8 @@ const TabsNavigation = () => {
                     options={{
                         title: "Feed",
                         tabBarIcon: ({ color }) => (
-                            <FontAwesome
-                                name="archive"
+                            <MaterialIcons
+                                name="dynamic-feed"
                                 size={20}
                                 color={color}
                             />
@@ -69,7 +62,7 @@ const TabsNavigation = () => {
                     options={{
                         title: "Library",
                         tabBarIcon: ({ color }) => (
-                            <FontAwesome6 name="book" size={24} color={color} />
+                            <Ionicons name="library" size={24} color={color} />
                         ),
                     }}
                 />

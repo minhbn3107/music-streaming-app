@@ -2,7 +2,7 @@ import { StackScreenWithSearchBar } from "@/constants/layout";
 import { defaultStyles } from "@/styles";
 import { Stack } from "expo-router";
 import { View } from "react-native";
-const PlaylistsScreenLayout = () => {
+const FeedScreenLayout = () => {
     return (
         <View style={defaultStyles.container}>
             <Stack>
@@ -10,11 +10,11 @@ const PlaylistsScreenLayout = () => {
                     name="index"
                     options={{
                         ...StackScreenWithSearchBar,
-                        headerTitle: "Playlists",
+                        headerTitle: "",
                     }}
                 />
             </Stack>
         </View>
     );
 };
-export default PlaylistsScreenLayout;
+export default FeedScreenLayout;

@@ -1,17 +1,23 @@
 import { unknownTrackImageUri } from "@/constants/images";
 import { colors, fontSize } from "@/constants/tokens";
 import { defaultStyles } from "@/styles";
-import { StyleSheet, Text, Pressable, View, Platform } from "react-native";
-import FastImage from "react-native-fast-image";
-import { Track, useActiveTrack, useIsPlaying } from "react-native-track-player";
+import {
+    StyleSheet,
+    Text,
+    Pressable,
+    View,
+    Platform,
+    Image,
+} from "react-native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
-import LoaderKit from "react-native-loader-kit";
+// import LoaderKit from "react-native-loader-kit";
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withSpring,
     withTiming,
 } from "react-native-reanimated";
+import { Track, useSoundStore } from "@/hooks/useSoundStore";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -24,8 +30,8 @@ export const TrackListItem = ({
     track,
     onTrackSelect: handleTrackSelect,
 }: TrackListItemProps) => {
-    const { playing } = useIsPlaying();
-    const isActiveTrack = useActiveTrack()?.url === track.url;
+    const { isPlaying, activeTrack } = useSoundStore();
+    const isActiveTrack = activeTrack?.url === track.url;
     const scale = useSharedValue(1);
     const opacity = useSharedValue(1);
 
@@ -58,31 +64,37 @@ export const TrackListItem = ({
             }}
         >
             <View style={styles.imageContainer}>
-                <FastImage
+                <Image
                     source={{
                         uri: track.artwork ?? unknownTrackImageUri,
-                        priority: FastImage.priority.normal,
                     }}
                     style={{
                         ...styles.trackArtworkImage,
                         opacity: isActiveTrack ? 0.6 : 1,
                     }}
                 />
-                {isActiveTrack &&
-                    (playing ? (
-                        <LoaderKit
-                            style={styles.trackPlayingIconIndicator}
-                            name="LineScaleParty"
-                            color={colors.background}
-                        />
-                    ) : (
-                        <Ionicons
-                            style={styles.trackPausedIndicator}
-                            name="play"
-                            size={24}
-                            color={colors.background}
-                        />
-                    ))}
+                {isActiveTrack && (
+                    // (isPlaying ? (
+                    //     <LoaderKit
+                    //         style={styles.trackPlayingIconIndicator}
+                    //         name="LineScaleParty"
+                    //         color={colors.background}
+                    //     />
+                    // ) : (
+                    //     <Ionicons
+                    //         style={styles.trackPausedIndicator}
+                    //         name="play"
+                    //         size={24}
+                    //         color={colors.background}
+                    //     />
+                    // ))
+                    <Ionicons
+                        style={styles.trackPausedIndicator}
+                        name="play"
+                        size={24}
+                        color={colors.background}
+                    />
+                )}
             </View>
             <View style={styles.information}>
                 <View style={{ width: "100%" }}>
@@ -104,7 +116,7 @@ export const TrackListItem = ({
                 <Entypo
                     name="dots-three-horizontal"
                     size={18}
-                    color={colors.icon}
+                    color={colors.text}
                 />
             </View>
         </AnimatedPressable>

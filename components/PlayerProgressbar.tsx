@@ -1,21 +1,155 @@
+// import { colors, fontSize } from "@/constants/tokens";
+// import { formatSecondsToMinutes } from "@/helpers/miscellaneous";
+// import { defaultStyles, utilsStyles } from "@/styles";
+// import { StyleSheet, Text, View, ViewProps } from "react-native";
+// import { Slider } from "react-native-awesome-slider";
+// import { useSharedValue } from "react-native-reanimated";
+// import SoundPlayer from "react-native-sound-player";
+// import { useEffect, useState } from "react";
+
+// export const PlayerProgressBar = ({ style }: ViewProps) => {
+//     const [duration, setDuration] = useState(0);
+//     const [position, setPosition] = useState(0);
+
+//     const isSliding = useSharedValue(false);
+//     const progress = useSharedValue(0);
+//     const min = useSharedValue(0);
+//     const max = useSharedValue(1);
+
+//     // Set up progress tracking interval
+//     useEffect(() => {
+//         let progressInterval: NodeJS.Timeout;
+
+//         const startProgressTracking = () => {
+//             progressInterval = setInterval(async () => {
+//                 try {
+//                     const info = await SoundPlayer.getInfo();
+//                     if (info) {
+//                         setDuration(info.duration);
+//                         setPosition(info.currentTime);
+//                     }
+//                 } catch (error) {
+//                     console.error("Error getting sound info:", error);
+//                 }
+//             }, 250);
+//         };
+
+//         startProgressTracking();
+
+//         // Clean up interval on unmount
+//         return () => {
+//             if (progressInterval) {
+//                 clearInterval(progressInterval);
+//             }
+//         };
+//     }, []);
+
+//     // Format times
+//     const trackElapsedTime = formatSecondsToMinutes(position);
+//     const trackRemainingTime = formatSecondsToMinutes(duration - position);
+
+//     // Update progress value when not sliding
+//     if (!isSliding.value) {
+//         progress.value = duration > 0 ? position / duration : 0;
+//     }
+
+//     const handleSeek = async (value: number) => {
+//         try {
+//             const targetSeconds = value * duration;
+//             await SoundPlayer.seek(targetSeconds);
+//         } catch (error) {
+//             console.error("Error seeking:", error);
+//         }
+//     };
+
+//     return (
+//         <View style={style}>
+//             <Slider
+//                 progress={progress}
+//                 minimumValue={min}
+//                 maximumValue={max}
+//                 containerStyle={utilsStyles.slider}
+//                 thumbWidth={0}
+//                 renderBubble={() => null}
+//                 theme={{
+//                     minimumTrackTintColor: colors.minimumTrackTintColor,
+//                     maximumTrackTintColor: colors.maximumTrackTintColor,
+//                 }}
+//                 onSlidingStart={() => {
+//                     isSliding.value = true;
+//                 }}
+//                 onValueChange={async (value) => {
+//                     await handleSeek(value);
+//                 }}
+//                 onSlidingComplete={async (value) => {
+//                     // if the user is not sliding, we should not update the position
+//                     if (!isSliding.value) return;
+//                     isSliding.value = false;
+//                     await handleSeek(value);
+//                 }}
+//             />
+//             <View style={styles.timeRow}>
+//                 <Text style={styles.timeText}>{trackElapsedTime}</Text>
+//                 <Text style={styles.timeText}>
+//                     {"-"} {trackRemainingTime}
+//                 </Text>
+//             </View>
+//         </View>
+//     );
+// };
+
+// const styles = StyleSheet.create({
+//     timeRow: {
+//         flexDirection: "row",
+//         justifyContent: "space-between",
+//         alignItems: "baseline",
+//         marginTop: 20,
+//     },
+//     timeText: {
+//         ...defaultStyles.text,
+//         color: colors.background,
+//         opacity: 0.75,
+//         fontSize: fontSize.xs,
+//         letterSpacing: 0.7,
+//         fontWeight: "500",
+//     },
+// });
 import { colors, fontSize } from "@/constants/tokens";
 import { formatSecondsToMinutes } from "@/helpers/miscellaneous";
 import { defaultStyles, utilsStyles } from "@/styles";
 import { StyleSheet, Text, View, ViewProps } from "react-native";
 import { Slider } from "react-native-awesome-slider";
 import { useSharedValue } from "react-native-reanimated";
-import TrackPlayer, { useProgress } from "react-native-track-player";
+import { useEffect } from "react";
+import { useSoundStore } from "@/hooks/useSoundStore";
+
 export const PlayerProgressBar = ({ style }: ViewProps) => {
-    const { duration, position } = useProgress(250);
+    const { duration, positionMillis, seek } = useSoundStore((state) => state);
     const isSliding = useSharedValue(false);
     const progress = useSharedValue(0);
     const min = useSharedValue(0);
     const max = useSharedValue(1);
-    const trackElapsedTime = formatSecondsToMinutes(position);
-    const trackRemainingTime = formatSecondsToMinutes(duration - position);
-    if (!isSliding.value) {
-        progress.value = duration > 0 ? position / duration : 0;
-    }
+
+    useEffect(() => {
+        if (duration > 0) {
+            progress.value = positionMillis / duration;
+        }
+    }, [positionMillis, duration]);
+
+    // Format times
+    const trackElapsedTime = formatSecondsToMinutes(positionMillis);
+    const trackRemainingTime = formatSecondsToMinutes(
+        duration - positionMillis
+    );
+
+    const handleSeek = async (value: number) => {
+        try {
+            await seek(value * duration);
+        } catch (error) {
+            console.error("Error seeking:", error);
+        }
+    };
+
     return (
         <View style={style}>
             <Slider
@@ -29,15 +163,17 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
                     minimumTrackTintColor: colors.minimumTrackTintColor,
                     maximumTrackTintColor: colors.maximumTrackTintColor,
                 }}
-                onSlidingStart={() => (isSliding.value = true)}
+                onSlidingStart={() => {
+                    isSliding.value = true;
+                }}
                 onValueChange={async (value) => {
-                    await TrackPlayer.seekTo(value * duration);
+                    await handleSeek(value);
                 }}
                 onSlidingComplete={async (value) => {
                     // if the user is not sliding, we should not update the position
                     if (!isSliding.value) return;
                     isSliding.value = false;
-                    await TrackPlayer.seekTo(value * duration);
+                    await handleSeek(value);
                 }}
             />
             <View style={styles.timeRow}>
@@ -49,6 +185,7 @@ export const PlayerProgressBar = ({ style }: ViewProps) => {
         </View>
     );
 };
+
 const styles = StyleSheet.create({
     timeRow: {
         flexDirection: "row",

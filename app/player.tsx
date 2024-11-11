@@ -6,19 +6,32 @@ import { PlayerVolumeBar } from "@/components/PlayerVolumeBar";
 import { SwipeablePlayerScreen } from "@/components/SwipeablePlayerScreen";
 import { unknownTrackImageUri } from "@/constants/images";
 import { colors, fontSize, screenPadding } from "@/constants/tokens";
-import { usePlayerBackground } from "@/hooks/usePlayerBackground";
+// import { usePlayerBackground } from "@/hooks/usePlayerBackground";
 import { defaultStyles, utilsStyles } from "@/styles";
-import { FontAwesome } from "@expo/vector-icons";
+import {
+    FontAwesome,
+    AntDesign,
+    MaterialCommunityIcons,
+    Feather,
+} from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import FastImage from "react-native-fast-image";
+import {
+    ActivityIndicator,
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useActiveTrack } from "react-native-track-player";
+import { useSoundStore } from "@/hooks/useSoundStore";
+import { router } from "expo-router";
+
 const PlayerScreen = () => {
-    const activeTrack = useActiveTrack();
-    const { imageColors } = usePlayerBackground(
-        activeTrack?.artwork ?? unknownTrackImageUri
-    );
+    const { activeTrack } = useSoundStore();
+    // const { imageColors } = usePlayerBackground(
+    //     activeTrack?.artwork ?? unknownTrackImageUri
+    // );
     const { top, bottom } = useSafeAreaInsets();
     const isFavorite = false;
     const toggleFavorite = () => {};
@@ -36,9 +49,10 @@ const PlayerScreen = () => {
             <LinearGradient
                 style={{ flex: 1 }}
                 colors={
-                    imageColors
-                        ? [imageColors.dominant, imageColors.average]
-                        : [colors.background, colors.primary]
+                    // imageColors
+                    //     ? [imageColors.palette, imageColors.average]
+                    //     : [colors.background, colors.primary]
+                    [colors.background, colors.text]
                 }
             >
                 <View style={styles.overlayContainer}>
@@ -51,12 +65,11 @@ const PlayerScreen = () => {
                         }}
                     >
                         <View style={styles.artworkImageContainer}>
-                            <FastImage
+                            <Image
                                 source={{
                                     uri:
                                         activeTrack.artwork ??
                                         unknownTrackImageUri,
-                                    priority: FastImage.priority.high,
                                 }}
                                 resizeMode="cover"
                                 style={styles.artworkImage}
@@ -108,21 +121,6 @@ const PlayerScreen = () => {
                                                 justifyContent: "center",
                                             }}
                                         >
-                                            <FontAwesome
-                                                name={
-                                                    isFavorite
-                                                        ? "heart"
-                                                        : "heart-o"
-                                                }
-                                                size={30}
-                                                color={
-                                                    isFavorite
-                                                        ? colors.primary
-                                                        : colors.background
-                                                }
-                                                style={{ marginHorizontal: 14 }}
-                                                onPress={toggleFavorite}
-                                            />
                                             <View
                                                 style={utilsStyles.centeredRow}
                                             >
@@ -153,6 +151,61 @@ const PlayerScreen = () => {
                             <PlayerVolumeBar
                                 style={{ marginTop: "auto", marginBottom: 80 }}
                             />
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <FontAwesome
+                                        name={isFavorite ? "heart" : "heart-o"}
+                                        size={25}
+                                        color={
+                                            isFavorite
+                                                ? colors.primary
+                                                : colors.background
+                                        }
+                                        style={{ marginHorizontal: 14 }}
+                                        onPress={toggleFavorite}
+                                    />
+                                    <Text
+                                        style={{
+                                            color: colors.background,
+                                            marginRight: 20,
+                                            fontSize: 15,
+                                        }}
+                                    >
+                                        12K
+                                    </Text>
+                                    <MaterialCommunityIcons
+                                        name="comment-text-outline"
+                                        size={25}
+                                        color={colors.background}
+                                        style={{ marginHorizontal: 14 }}
+                                    />
+                                    <Text
+                                        style={{
+                                            color: colors.background,
+                                            fontSize: 15,
+                                        }}
+                                    >
+                                        450
+                                    </Text>
+                                </View>
+                                <Feather
+                                    name="upload"
+                                    size={30}
+                                    color={colors.background}
+                                />
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -173,16 +226,25 @@ const DismissPlayerSymbol = () => {
                 justifyContent: "center",
             }}
         >
-            <View
-                accessible={false}
-                style={{
-                    width: 50,
-                    height: 8,
-                    borderRadius: 8,
-                    backgroundColor: "#fff",
-                    opacity: 0.7,
-                }}
-            />
+            <TouchableOpacity onPress={() => router.back()}>
+                {/* <View
+                    style={{
+                        width: 25,
+                        height: 25,
+                        borderLeftWidth: 8,
+                        borderBottomWidth: 8,
+                        borderColor: "#aaa",
+                        opacity: 0.7,
+                        transform: [{ rotate: "-45deg" }],
+                    }}
+                /> */}
+                <AntDesign
+                    name="down"
+                    size={50}
+                    color="#aaa"
+                    style={{ opacity: 0.7 }}
+                />
+            </TouchableOpacity>
         </View>
     );
 };

@@ -10,7 +10,6 @@ import Animated, {
     type SharedValue,
 } from "react-native-reanimated";
 import { router } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const DISMISS_THRESHOLD = SCREEN_HEIGHT * 0.2;
@@ -23,43 +22,10 @@ interface SwipeablePlayerScreenProps extends PropsWithChildren {
     onDismiss?: () => void;
 }
 
-const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1,
-        backgroundColor: "transparent",
-    },
-    overlay: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-    },
-    container: {
-        flex: 1,
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "transparent",
-    },
-    contentWrapper: {
-        flex: 1,
-        backgroundColor: "transparent",
-    },
-    content: {
-        flex: 1,
-        marginTop: 50,
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
-        overflow: "hidden",
-        backgroundColor: "transparent",
-    },
-});
-
 export const SwipeablePlayerScreen: React.FC<SwipeablePlayerScreenProps> = ({
     children,
     onDismiss,
 }) => {
-    const insets = useSafeAreaInsets();
     const translateY: SharedValue<number> = useSharedValue(0);
     const context: SharedValue<GestureContext> = useSharedValue({ y: 0 });
     const overlayOpacity = useSharedValue(1);
@@ -131,3 +97,35 @@ export const SwipeablePlayerScreen: React.FC<SwipeablePlayerScreenProps> = ({
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    wrapper: {
+        flex: 1,
+        backgroundColor: "transparent",
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    container: {
+        flex: 1,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "transparent",
+    },
+    contentWrapper: {
+        flex: 1,
+        backgroundColor: "transparent",
+    },
+    content: {
+        flex: 1,
+        marginTop: 50,
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+        overflow: "hidden",
+        backgroundColor: "transparent",
+    },
+});

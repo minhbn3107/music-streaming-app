@@ -38,4 +38,8 @@ export const utilsStyles = StyleSheet.create({
         marginTop: 40,
         opacity: 0.2,
     },
+    img: {
+        width: "100%",
+        height: "100%",
+    },
 });

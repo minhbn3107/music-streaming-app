@@ -1,6 +1,5 @@
 import { PlayPauseButton, SkipToNextButton } from "@/components/PlayerControls";
 import { unknownTrackImageUri } from "@/constants/images";
-import { useLastActiveTrack } from "@/hooks/useLastActiveTrack";
 import { defaultStyles } from "@/styles";
 import {
     StyleSheet,
@@ -8,23 +7,21 @@ import {
     View,
     ViewProps,
     Text,
+    Image,
 } from "react-native";
-import FastImage from "react-native-fast-image";
-import { useActiveTrack } from "react-native-track-player";
 import { useRouter } from "expo-router";
 import { Marquee } from "@animatereactnative/marquee";
+import { useSoundStore } from "@/hooks/useSoundStore";
 
 export const FloatingPlayer = ({ style }: ViewProps) => {
     const router = useRouter();
-    const activeTrack = useActiveTrack();
-    const lastActiveTrack = useLastActiveTrack();
-    const displayedTrack = activeTrack ?? lastActiveTrack;
+    const { activeTrack } = useSoundStore();
 
     const handlePress = () => {
         router.navigate("/player");
     };
 
-    if (!displayedTrack) return null;
+    if (!activeTrack) return null;
     return (
         <TouchableOpacity
             onPress={handlePress}
@@ -32,35 +29,35 @@ export const FloatingPlayer = ({ style }: ViewProps) => {
             style={[styles.container, style]}
         >
             <>
-                <FastImage
+                <Image
                     source={{
-                        uri: displayedTrack.artwork ?? unknownTrackImageUri,
+                        uri: activeTrack.artwork ?? unknownTrackImageUri,
                     }}
                     style={styles.trackArtworkImage}
                 />
                 <View style={styles.trackTitleContainer}>
-                    {displayedTrack.title?.length &&
-                    displayedTrack.title?.length > 25 ? (
+                    {activeTrack.title?.length &&
+                    activeTrack.title?.length > 25 ? (
                         <Marquee spacing={150} speed={1}>
                             <Text style={styles.trackTitle}>
-                                {displayedTrack.title}
+                                {activeTrack.title}
                             </Text>
                         </Marquee>
                     ) : (
                         <Text style={styles.trackTitle}>
-                            {displayedTrack.title}
+                            {activeTrack.title}
                         </Text>
                     )}
-                    {displayedTrack.artist?.length &&
-                    displayedTrack.artist?.length > 30 ? (
+                    {activeTrack.artist?.length &&
+                    activeTrack.artist?.length > 30 ? (
                         <Marquee spacing={150} speed={1}>
                             <Text style={styles.trackArtist}>
-                                {displayedTrack.artist}
+                                {activeTrack.artist}
                             </Text>
                         </Marquee>
                     ) : (
                         <Text style={styles.trackArtist}>
-                            {displayedTrack.artist || "Unknown Artist"}
+                            {activeTrack.artist || "Unknown Artist"}
                         </Text>
                     )}
                 </View>

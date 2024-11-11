@@ -7,7 +7,7 @@ import { defaultStyles } from "@/styles";
 import { useMemo } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 
-const SongsScreen = () => {
+const LibraryScreen = () => {
     const search = useNavigationSearch({
         searchBarOptions: {
             placeholder: "Find in songs",
@@ -38,4 +38,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SongsScreen;
+export default LibraryScreen;

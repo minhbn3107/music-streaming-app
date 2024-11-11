@@ -1,7 +1,7 @@
 import { colors } from "@/constants/tokens";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { useSoundStore } from "@/hooks/useSoundStore";
+import { FontAwesome6, FontAwesome, Entypo } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
-import TrackPlayer, { useIsPlaying } from "react-native-track-player";
 type PlayerControlsProps = {
     style?: ViewStyle;
 };
@@ -13,26 +13,42 @@ export const PlayerControls = ({ style }: PlayerControlsProps) => {
     return (
         <View style={[styles.container, style]}>
             <View style={styles.row}>
+                <ShuttleButton />
                 <SkipToPreviousButton />
                 <PlayPauseButton />
                 <SkipToNextButton />
+                <ThreeDotsButton />
             </View>
         </View>
+    );
+};
+export const ShuttleButton = ({ iconSize = 30 }: PlayerButtonProps) => {
+    return (
+        <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => console.log("random")}
+        >
+            <FontAwesome
+                name="random"
+                size={iconSize}
+                color={colors.background}
+            />
+        </TouchableOpacity>
     );
 };
 export const PlayPauseButton = ({
     style,
     iconSize = 48,
 }: PlayerButtonProps) => {
-    const { playing } = useIsPlaying();
+    const { isPlaying, pause, resume } = useSoundStore();
     return (
         <View style={[{ height: iconSize }, style]}>
             <TouchableOpacity
                 activeOpacity={0.85}
-                onPress={playing ? TrackPlayer.pause : TrackPlayer.play}
+                onPress={isPlaying ? pause : resume}
             >
                 <FontAwesome6
-                    name={playing ? "pause" : "play"}
+                    name={isPlaying ? "pause" : "play"}
                     size={iconSize}
                     color={colors.background}
                 />
@@ -44,7 +60,7 @@ export const SkipToNextButton = ({ iconSize = 30 }: PlayerButtonProps) => {
     return (
         <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => TrackPlayer.skipToNext()}
+            onPress={() => console.log("skip to next")}
         >
             <FontAwesome6
                 name="forward"
@@ -58,7 +74,7 @@ export const SkipToPreviousButton = ({ iconSize = 30 }: PlayerButtonProps) => {
     return (
         <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => TrackPlayer.skipToPrevious()}
+            onPress={() => console.log("skip to previous")}
         >
             <FontAwesome6
                 name={"backward"}
@@ -68,7 +84,20 @@ export const SkipToPreviousButton = ({ iconSize = 30 }: PlayerButtonProps) => {
         </TouchableOpacity>
     );
 };
-
+export const ThreeDotsButton = ({ iconSize = 30 }: PlayerButtonProps) => {
+    return (
+        <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => console.log("three")}
+        >
+            <Entypo
+                name="dots-three-horizontal"
+                size={iconSize}
+                color={colors.background}
+            />
+        </TouchableOpacity>
+    );
+};
 const styles = StyleSheet.create({
     container: {
         width: "100%",
